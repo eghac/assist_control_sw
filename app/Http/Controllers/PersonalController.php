@@ -63,7 +63,7 @@ class PersonalController extends Controller
         }
 
         $personal->id_cargo=$request->get('id_cargo');
-        $personal->estado='1';
+        $personal->estado='0';
 
 
         $personal->save();

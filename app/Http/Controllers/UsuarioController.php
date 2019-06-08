@@ -34,8 +34,12 @@ class UsuarioController extends Controller
         }
 
        /* $personal->id_cargo=$request->get('id_cargo');*/
-        $personal->estado='1';
-        $personal->id_usuario=$user->id;
-        $personal->save();
+        $personal->estado='0';
+        $personal->id_user=$user->id;
+        if($personal->save()) {
+            return response('Correcto', 200);
+        } else {
+            return response('No se pudo', 400);
+        }
     }
 }

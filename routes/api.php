@@ -18,3 +18,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::post('/empleado', 'UsuarioController@signup');
+// return response('Hello World', 200)
+
+Route::get('/contrato/{id}', 'ContratoController@show');

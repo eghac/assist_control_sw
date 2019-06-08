@@ -58,3 +58,5 @@ Route::get('cliente/{id}/{id_servicio}', 'ClienteController@show');
 
 // Route::post('/empleado', 'UsuarioController@signup');
 // Auth::routes();`
+Route::resource('horas','Horas_extrasController');
+Auth::routes();

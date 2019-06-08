@@ -1,0 +1,3 @@
+git add .
+git commit -m "backup de bd"
+git push -u origin laravel

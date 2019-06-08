@@ -6,9 +6,14 @@ use Illuminate\Http\Request;
 use App\Marcado;
 use App\Personal;
 use App\Contrato;
+use App\Horas_extras;
 use App\Horario;
+use App\Total;
 
-class HorariosController extends Controller
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Input;
+
+class Horas_extrasController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,6 +23,15 @@ class HorariosController extends Controller
     public function index()
     {
         //
+        $horas=DB::table('horas_extras as h')
+        ->join('personal as p','p.id','=','h.id_personal')
+        ->select('p.nombre as personal','h.fecha_ini','h.fecha_final','h.monto')
+        ->orderBy('h.id')->get();
+                
+        //dd($personal);
+        //return $personal->toJson();
+        return view('crud.horas.index',compact('horas'));
+   
     }
 
     /**
@@ -28,9 +42,9 @@ class HorariosController extends Controller
     public function create()
     {
         //
-        $personal=DB::table('personal')->where('estado','>=','0')->get();
-        $horario=DB::table('horario')->get();
-        return view('crud.contrato.create',["personal"=>$personal,"horario"=>$horario]);
+        $personal=DB::table('personal')->get();
+        $total=DB::table('total')->get();
+        return view('crud.horas.create',["personal"=>$personal,"total"=>$total]);
     }
 
     /**
@@ -42,32 +56,18 @@ class HorariosController extends Controller
     public function store(Request $request)
     {
         //
+
         $horas_extras=new horas_extras($request->all());
         $horas_extras->tipo=$request->get('tipo');
         $horas_extras->fecha_ini=$request->get('fecha_ini');
         $horas_extras->fecha_final=$request->get('fecha_final');
         $horas_extras->id_personal=$request->get('id_personal');
-
-
-        $hora_diaria=0;
-        
-        if($horas_extras->$fecha_ini)
-        
-        $marcado=DB::table('marcado as m')
-        ->join('personal as p','c.id_personal','=','p.id')
-        ->join('horario as h','c.id_horario','=','h.id')
-        ->select('c.nombre','p.nombre as personal','c.tarifa','c.fecha_ini','c.fecha_fin','h.nombre as horario')
-        ->orderBy('c.id')->get();
-        
-        
-        $monto->
-
-
+        $horas_extras->monto='0';
         $horas_extras->save();
-        //dd($personal);
-        return redirect('contrato');
-
-
+        
+        $procedimietno=DB::select('CALL horas_extras');
+ 
+        return redirect('horas');
     }
 
     

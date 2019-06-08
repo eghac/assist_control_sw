@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Personal;
 use App\Horarios;
 use App\Contrato;
+use App\Cargo;
 
 
 use Illuminate\Support\Facades\DB;
@@ -45,7 +46,8 @@ class ContratoController extends Controller
         //
         $personal=DB::table('personal')->where('estado','>=','0')->get();
         $horario=DB::table('horario')->get();
-        return view('crud.contrato.create',["personal"=>$personal,"horario"=>$horario]);
+        $cargo=DB::table('cargo')->get();
+        return view('crud.contrato.create',["personal"=>$personal,"horario"=>$horario,"cargo"=>$cargo]);
     }
 
     /**
@@ -66,6 +68,11 @@ class ContratoController extends Controller
         $contrato->id_horario=$request->get('id_horario');
 
 
+        $cargo=Personal::findOrFail($contrato->id_personal);
+    	$cargo->id_cargo=$request->get('id_cargo');;
+    	$cargo->update();
+		
+
         $contrato->save();
         //dd($personal);
         return redirect('contrato');
@@ -82,6 +89,12 @@ class ContratoController extends Controller
     public function show($id)
     {
         //
+        $contrato=DB::table('contrato as c')
+        ->join('personal as p','c.id_personal','=','p.id')
+        ->join('horario as h','c.id_horario','=','h.id')
+        ->select('p.nombre as personal','c.fecha_ini','c.fecha_fin','h.inicio','h.fin')             
+        ->where('c.id_personal','=',$id)->get();
+        return $contrato->toJson();
     }
 
     /**

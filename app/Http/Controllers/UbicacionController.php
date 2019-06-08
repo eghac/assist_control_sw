@@ -43,7 +43,7 @@ class UbicacionController extends Controller
     {
         //
 
-        $ubicacion=DB::table('ubicacion')->select(DB::raw('max(id)as id'))->get();
+       
 
         
         $this->validate($request,[
@@ -53,7 +53,7 @@ class UbicacionController extends Controller
         ]);
         $ubi=new Ubicacion($request->all());
         $ubi->save();
-
+        $ubicacion=DB::table('ubicacion')->select(DB::raw('max(id)as id'))->get();
         //dd($ubicacion);
         
         return view('crud.cliente.create',['ubicacion'=>$ubicacion]);
