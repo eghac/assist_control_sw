@@ -33,13 +33,68 @@ class UsuarioController extends Controller
             $personal->foto=$file->getClientOriginalName();
         }
 
+
        /* $personal->id_cargo=$request->get('id_cargo');*/
         $personal->estado='0';
         $personal->id_user=$user->id;
+
+        
+
+        
+
+
         if($personal->save()) {
-            return response('Correcto', 200);
+            $id_p= DB::table('personal as p')
+        ->select('p.id as id')
+        ->orderBy('p.id', 'desc')->first();
+            return response()->json([
+                'id'=>$id_p->id,
+                'nombre'=>$personal->nombre,
+                'email'=>$user->email,
+                'cedula'=>$personal->huella,
+                'message' => 'El Usuario es valido',
+                'status_code' => 200
+            ]);
         } else {
-            return response('No se pudo', 400);
+            return response()->json([
+                'message' => 'EL Usuario no es valida',
+                'status_code' => 400
+            ]);
         }
+    }
+
+    public function show($email,$password)
+    {
+        //
+     
+         $hashpassword= DB::table('users as u')
+        ->select('u.password')             
+        ->where('u.email','=',$email)    
+        ->first();
+
+        //$pass=var_dump($hashpassword->password) ;
+       // return $pass['1'];
+        //return $hashpassword->toJson();
+       /* Hash::check('plain-text', $hashedPassword*/
+       //if ( Hash::check($password,$hashpassword)) { 
+        if ( Hash::check($password,$hashpassword->password)) {
+            return response()->json([
+                'message' => 'la contrseña es valida',
+                'status_code' => 200
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'la contrseña no es valida',
+                'status_code' => 400
+            ]);
+        }
+/*
+        return $contrato->toJson();
+
+        if ($contrato > '0') {
+            return response('Correcto', 200);
+        }*/
+        abort(400, 'Esta acción no está autorizada.');
+        //return $contrato->toJson();
     }
 }

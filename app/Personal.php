@@ -11,6 +11,7 @@ class Personal extends Model
     public $timestamps = false;
     protected $primayKey='id';
     protected $fillable = [
+        'id',
         'nombre',
         'cedula',
         'huella', 

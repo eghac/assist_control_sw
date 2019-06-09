@@ -8,14 +8,13 @@ use App\Personal;
 use App\Contrato;
 use App\Horas_extras;
 use App\Horario;
-use App\Ubicacion;
-use App\Cliente;
 use App\Total;
+use App\Horas_traba;
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
-use App\Services\PayUService\Exception;
 
-class MarcadoController extends Controller
+class Hora_TController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -25,6 +24,15 @@ class MarcadoController extends Controller
     public function index()
     {
         //
+        $horas=DB::table('horas_trabaja as h')
+        ->join('personal as p','p.id','=','h.id_personal')
+        ->select('p.nombre as personal','h.fecha_ini','h.monto','h.total')
+        ->orderBy('h.id')->get();
+                
+        //dd($personal);
+        //return $personal->toJson();
+        return view('crud.horas_t.index',compact('horas'));
+   
     }
 
     /**
@@ -35,6 +43,9 @@ class MarcadoController extends Controller
     public function create()
     {
         //
+        $personal=DB::table('personal')->get();
+        $total=DB::table('total')->get();
+        return view('crud.horas.create',["personal"=>$personal,"total"=>$total]);
     }
 
     /**
@@ -47,45 +58,20 @@ class MarcadoController extends Controller
     {
         //
 
-       
-       
-
-
-        $ubicacion=new Ubicacion($request->all());
-        $ubicacion->nombre='marcado';
-        $ubicacion->x=$request->get('x');
-        $ubicacion->y=$request->get('y');
-        $ubicacion->save();
-
-        $id_ubi= DB::table('ubicacion as u')
-        ->select('u.id as id')
-        ->orderBy('u.id','desc')->first();
+        $horas_extras=new horas_extras($request->all());
+        $horas_extras->tipo=$request->get('tipo');
+        $horas_extras->fecha_ini=$request->get('fecha_ini');
+        $horas_extras->fecha_final=$request->get('fecha_final');
+        $horas_extras->id_personal=$request->get('id_personal');
+        $horas_extras->monto='0';
+        $horas_extras->save();
         
-
-        
-
-
-        $marcado=new Marcado($request->all());
-        $marcado->id_personal=$request->get('id_personal');
-        $marcado->fecha=$request->get('fecha');
-        $marcado->tipo=$request->get('tipo');
-        $marcado->id_ubicacion=$id_ubi->id;
-        $marcado->hora=$request->get('hora');
-
-        if($marcado->save()) {
-            return response()->json([
-                'message' => 'la marcacion es valida',
-                'status_code' => 200
-            ]);
-        } else {
-            return response()->json([
-                'message' => 'la marcacion no es valida',
-                'status_code' => 400
-            ]);
-        }
-
-
+        $procedimietno=DB::select('CALL horas_extras');
+ 
+        return redirect('horas');
     }
+
+    
 
     /**
      * Display the specified resource.
@@ -93,22 +79,10 @@ class MarcadoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show()
+    public function show($id)
     {
         //
-      /*  $cliente=DB::table('cliente as c')
-        ->join('ubicacion as u','c.id_ubicacion','=','u.id')
-        ->select('c.nombre','u.nombre as ubicacion','c.telefono')
-        ->orderBy('c.id')->get();*/
 
-      /*  $id_ubi= DB::table('ubicacion as u')
-        ->select('u.id as ide')
-        ->orderBy('u.id')->first();
-        dd( $id_ubi) ;*/
-
-       
-        //dd($personal);
-        
     }
 
     /**

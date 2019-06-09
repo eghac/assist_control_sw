@@ -60,3 +60,6 @@ Route::get('cliente/{id}/{id_servicio}', 'ClienteController@show');
 // Auth::routes();`
 Route::resource('horas','Horas_extrasController');
 Auth::routes();
+
+Route::resource('horas_t','Hora_tController');
+Auth::routes();

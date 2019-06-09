@@ -21,3 +21,9 @@ Route::post('/empleado', 'UsuarioController@signup');
 // return response('Hello World', 200)
 
 Route::get('/contrato/{id}', 'ContratoController@show');
+
+Route::get('/login/{email}/{password}', 'UsuarioController@show');
+
+
+Route::post('/marcado', 'MarcadoController@store');
+//Route::get('/marcados', 'MarcadoController@show');
