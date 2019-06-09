@@ -11,17 +11,6 @@ import 'package:mime_type/mime_type.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ServicesBloc {
-  // static ServicesBloc _instance;
-
-  // factory ServicesBloc() {
-  //   if (_instance == null) {
-  //     _instance = new ServicesBloc._internal();
-  //   }
-  //   return _instance;
-  // }
-
-  // ServicesBloc._internal();
-
   final _servicesController = new BehaviorSubject<List<Service>>();
   final _loadingController = new BehaviorSubject<bool>();
 

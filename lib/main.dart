@@ -10,11 +10,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider(
+      marked: true,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Assist Control App',
         theme: ThemeData(
-          primarySwatch: Colors.teal,
+          primarySwatch: Colors.deepPurple,
         ),
         initialRoute: 'home',
         routes: {
