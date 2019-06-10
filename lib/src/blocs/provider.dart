@@ -1,3 +1,4 @@
+import 'package:assist_control_all_sw/src/blocs/login_bloc.dart';
 import 'package:assist_control_all_sw/src/blocs/services_bloc.dart';
 import 'package:assist_control_all_sw/src/models/marked_model.dart';
 export 'package:assist_control_all_sw/src/blocs/services_bloc.dart';
@@ -6,6 +7,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Provider extends InheritedWidget {
   final _servicesBloc = new ServicesBloc();
+  final loginBloc = LoginBloc();
   final bool markedGlobal;
   // final double _latUser;
   // final double _lngUser;
@@ -31,6 +33,11 @@ class Provider extends InheritedWidget {
   static ServicesBloc servicesBloc(BuildContext context) {
     return (context.inheritFromWidgetOfExactType(Provider) as Provider)
         ._servicesBloc;
+  }
+
+  static LoginBloc logicBloc(BuildContext context) {
+    return (context.inheritFromWidgetOfExactType(Provider) as Provider)
+        .loginBloc;
   }
 
   // static MarkedBloc markedBloc(BuildContext context) {

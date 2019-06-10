@@ -116,6 +116,7 @@ class _MapsPageState extends State<MapsPage> {
         mapType: gm.MapType.hybrid,
         initialCameraPosition: _initialCamera(),
         onMapCreated: (gm.GoogleMapController controller) {
+          if (!mounted) return;
           setState(() {
             _controller.complete(controller);
           });
@@ -177,6 +178,7 @@ class _MapsPageState extends State<MapsPage> {
             print('HAbilitar huella');
           } else {
             print('DESHABILITAR huella');
+            if(!mounted) return;
             setState(() {
               markedGlobal ?? true;
             });

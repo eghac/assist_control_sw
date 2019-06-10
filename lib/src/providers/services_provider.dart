@@ -17,9 +17,11 @@ class ServicesProvider {
   // final _url = '$globalUrl/eliot';
   final _url = '$globalUrl';
 
+  final _prefs = new PreferenciasUsuario();
+
   Future<List<Service>> getServices() async {
     // final url = '$_url/archivo.json';
-    final url = '$_url/api/servicio/5';
+    final url = '$_url/servicio/${_prefs.employeeId}';
     final response = await http.get(url);
 //    print(response.statusCode);
 //    if (response.statusCode == 200) {

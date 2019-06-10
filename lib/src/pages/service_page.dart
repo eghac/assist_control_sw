@@ -9,10 +9,16 @@ class ServicePage extends StatefulWidget {
 }
 
 class _ServicePageState extends State<ServicePage> {
+  bool _loading = true;
   @override
   Widget build(BuildContext context) {
     final servicesBloc = Provider.servicesBloc(context);
-    servicesBloc.getServices();
+
+    if (_loading) {
+      servicesBloc.getServices();
+      _loading = false;
+    }
+    // servicesBloc.getServices();
 
     // final servicesProvider = new ServicesProvider();
 
@@ -43,6 +49,8 @@ class _ServicePageState extends State<ServicePage> {
 
   Widget _buildItem(BuildContext context, Service service) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         ListTile(
           leading:
@@ -51,8 +59,29 @@ class _ServicePageState extends State<ServicePage> {
               color: Theme.of(context).primaryColor),
           title: Text('${service.customerName}'),
           subtitle: Text('${service.description}'),
-          onTap: () => Navigator.pushNamed(context, ServiceDetailPage.routeName,
-              arguments: service),
+          onTap: () => (service.state == 0)
+              ? Navigator.pushNamed(context, ServiceDetailPage.routeName,
+                  arguments: service)
+              : null,
+        ),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 16.0),
+          child: Row(
+            children: <Widget>[
+              Text(
+                'Estado: ',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Container(
+                  padding: EdgeInsets.all(4.0),
+                  color: service.state == 0 ? Colors.deepPurple : Colors.green,
+                  child: Text(
+                    service.state == 0 ? 'Pendiente' : 'Completado',
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
+                  )),
+            ],
+          ),
         ),
         Divider()
       ],

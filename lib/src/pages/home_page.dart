@@ -1,8 +1,15 @@
 import 'package:assist_control_all_sw/src/blocs/provider.dart';
 import 'package:assist_control_all_sw/src/models/marked_model.dart';
 import 'package:assist_control_all_sw/src/pages/maps_page.dart';
+import 'package:assist_control_all_sw/src/pages/profile_page.dart';
 import 'package:assist_control_all_sw/src/pages/service_page.dart';
+import 'package:assist_control_all_sw/src/pages/signin_page.dart';
+import 'package:assist_control_all_sw/src/pages/signup_page.dart';
 import 'package:assist_control_all_sw/src/providers/marked_provider.dart';
+import 'package:assist_control_all_sw/src/providers/profile_provider.dart';
+import 'package:assist_control_all_sw/src/providers/user_provider.dart';
+import 'package:assist_control_all_sw/src/utils/constants.dart';
+import 'package:assist_control_all_sw/src/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:flutter/services.dart';
@@ -27,6 +34,10 @@ class HomePageState extends State<HomePage> {
 
   final markedProvider = new MarkedProvider();
 
+  final userProvider = new UserProvider();
+
+  final profileProvider = new ProfileProvider();
+
   @override
   Widget build(BuildContext context) {
     final markedGlobal = Provider.of(context).markedGlobal;
@@ -36,18 +47,13 @@ class HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text('Assist Control App'),
         actions: <Widget>[
-          PopupMenuButton(
-            itemBuilder: (BuildContext context) {
-              return [
-                PopupMenuItem(
-                    child: GestureDetector(
-                  child: Text('Mi perfil'),
-                  onTap: () {
-                    print('Mostrar mi perfil');
-                  },
-                )),
-              ];
-            },
+          IconButton(
+            icon: Icon(Icons.person),
+            onPressed: () => _handleProfile(context),
+          ),
+          IconButton(
+            icon: Icon(Icons.exit_to_app),
+            onPressed: () => _logout(context),
           ),
         ],
       ),
@@ -58,10 +64,36 @@ class HomePageState extends State<HomePage> {
     );
   }
 
+  void _handleProfile(BuildContext context) async {
+    final res = await profileProvider.getProfileAndContract();
+    if (res['status_code'] == 200) {
+      Navigator.pushNamed(context, ProfilePage.routeName);
+      // showControlDialog333(context, 'HOla');
+    } else {
+      print('_handleProfile Error');
+    }
+  }
+
+  void _choiceAction(String choice) {
+    if (choice == menu[0]) {
+      print('0');
+    } else if (choice == menu[1]) {
+      // _logout(context);
+      print('1');
+    }
+  }
+
+  _logout(BuildContext context) async {
+    await userProvider.logout();
+    print('logout');
+    Navigator.pushReplacementNamed(context, LoginPage.routeName);
+  }
+
   Widget _floatingActionButton() {
     return FloatingActionButton(
         backgroundColor: Colors.black,
-        onPressed: _fingerPrint,
+        // onPressed: _fingerPrint,
+        onPressed: () => showControlDialog333(context, 'HOla'),
         child: Icon(
           Icons.fingerprint,
           size: 40.0,
@@ -69,7 +101,7 @@ class HomePageState extends State<HomePage> {
         ));
   }
 
-  Future<void> _fingerPrint() async {
+  Future<void> fingerPrint(int markedType) async {
     bool canCheckBiometric = false;
 
     bool isAuthorized = false;
@@ -100,7 +132,7 @@ class HomePageState extends State<HomePage> {
       final date = d[0];
 
       await markedProvider
-          .createMarked(MarkedModel(fecha: date, hora: time, tipo: 1),
+          .createMarked(MarkedModel(fecha: date, hora: time, tipo: markedType),
               _position?.latitude, _position?.longitude)
           .then((b) {
         if (b) {
@@ -136,7 +168,6 @@ class HomePageState extends State<HomePage> {
     switch (currentPage) {
       case 0:
         return MapsPage(markedCallback2: (geo.Position position) {
-          print('MapsPage');
           setState(() {
             _position = position;
           });
@@ -171,6 +202,50 @@ class HomePageState extends State<HomePage> {
                 },
               ),
             ],
+          );
+        });
+  }
+
+  void showControlDialog333(BuildContext context, String message) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Marcar asistencia'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      FlatButton(
+                        textColor: Colors.white,
+                        color: Colors.deepPurple,
+                        child: Text('Marcar entrada'),
+                        onPressed: () => fingerPrint(0),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      FlatButton(
+                        padding: EdgeInsets.symmetric(horizontal: 16.0),
+                        textColor: Colors.white,
+                        color: Colors.deepPurple,
+                        child: Text('Marcar salida'),
+                        onPressed: () => fingerPrint(1),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            // actions: <Widget>[
+            //   FlatButton(
+            //       onPressed: () => Navigator.of(context).pop(), child: Text('ok'))
+            // ],
           );
         });
   }
