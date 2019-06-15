@@ -63,3 +63,8 @@ Auth::routes();
 
 Route::resource('horas_t','Hora_tController');
 Auth::routes();
+Route::resource('horas_d','Hora_DController');
+Auth::routes();
+
+Route::resource('horas_a','MarcadoController');
+Auth::routes();

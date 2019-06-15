@@ -26,8 +26,8 @@ class Hora_TController extends Controller
         //
         $horas=DB::table('horas_trabaja as h')
         ->join('personal as p','p.id','=','h.id_personal')
-        ->select('p.nombre as personal','h.fecha_ini','h.monto','h.total')
-        ->orderBy('h.id')->get();
+        ->select('p.nombre','h.fecha_ini',DB::raw('sum(h.monto) as monto'),DB::raw('sum(h.total)as total'))
+        ->groupBy('p.nombre','h.fecha_ini')->get();
                 
         //dd($personal);
         //return $personal->toJson();

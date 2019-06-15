@@ -81,9 +81,7 @@
                               <li><a href="{{route('personal.index')}}">Personal</a></li>
                               <li><a href="{{route('cliente.index')}}">Cliente</a></li>
                               <li><a href="{{route('contrato.index')}}">Contratos</a></li>
-                              <li><a href="form_wizards.html">Form Wizard</a></li>
-                              <li><a href="form_upload.html">Form Upload</a></li>
-                              <li><a href="form_buttons.html">Form Buttons</a></li>
+                              
                             </ul>
                           </li>
 
@@ -92,10 +90,7 @@
                     <ul class="nav child_menu">
                       <li><a href="{{route('servicio.index')}}">Asignacion</a></li>
                       <li><a href="{{url('person')}}">Mapas</a></li>
-                      <li><a href="form_validation.html">Form Validation</a></li>
-                      <li><a href="form_wizards.html">Form Wizard</a></li>
-                      <li><a href="form_upload.html">Form Upload</a></li>
-                      <li><a href="form_buttons.html">Form Buttons</a></li>
+                     
                     </ul>
                   </li>
 
@@ -103,18 +98,11 @@
                     <ul class="nav child_menu">
                       <li><a href="{{route('horas.index')}}">Horas Extras</a></li>
                       <li><a href="{{route('horas_t.index')}}">Horas Trabajadas</a></li>
-                      <li><a href="morisjs.html">Horas Segun Contrato</a></li>
-                      <li><a href="echarts.html">Asistencia</a></li>
-                      <li><a href="other_charts.html">Other Charts</a></li>
+                      <li><a href="{{route('horas_d.index')}}">Horas Segun Contrato</a></li>
+                      <li><a href="{{route('horas_a.index')}}">Asistencia</a></li>
+                      
                     </ul>
-                  </li>
-                  <li><a><i class="fa fa-table"></i> Tables <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                      <li><a href="tables.html">Tables</a></li>
-                      <li><a href="tables_dynamic.html">Table Dynamic</a></li>
-                    </ul>
-                  </li>
-
+                 
                                  
                   <li><a href="javascript:void(0)"><i class="fa fa-laptop"></i> Landing Page <span class="label label-success pull-right">Coming Soon</span></a></li>
                 </ul>

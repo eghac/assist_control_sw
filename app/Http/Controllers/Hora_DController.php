@@ -13,7 +13,7 @@ use App\Cargo;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 
-class ContratoController extends Controller
+class Hora_DController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -26,12 +26,12 @@ class ContratoController extends Controller
         $contrato=DB::table('contrato as c')
         ->join('personal as p','c.id_personal','=','p.id')
         ->join('horario as h','c.id_horario','=','h.id')
-        ->select('c.nombre','p.nombre as personal','c.tarifa','c.fecha_ini','c.fecha_fin','h.nombre as horario')
-        ->orderBy('c.id')->get();
+        ->select('p.nombre as personal','c.tarifa','c.fecha_ini','h.inicio','h.fin',DB::raw('(h.fin/10000-h.inicio/10000) as total'))
+        ->groupBy('personal','c.tarifa','c.fecha_ini','h.inicio','h.fin')->get();
                 
         //dd($contrato);
         //return $contrato->toJson();
-        return view('crud.contrato.index',compact('contrato'));
+        return view('crud.Horas_d.index',compact('contrato'));
 
 
     }
@@ -93,9 +93,8 @@ class ContratoController extends Controller
         ->join('personal as p','c.id_personal','=','p.id')
         ->join('horario as h','c.id_horario','=','h.id')
         ->select('p.nombre as personal','c.fecha_ini','c.fecha_fin','h.inicio','h.fin')             
-        ->where('c.id_personal','=',$id)->first();
-        // return $contrato->toJson();
-        return response()->json($contrato);
+        ->where('c.id_personal','=',$id)->get();
+        return $contrato->toJson();
     }
 
     /**

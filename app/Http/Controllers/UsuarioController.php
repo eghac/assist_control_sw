@@ -17,6 +17,7 @@ class UsuarioController extends Controller
     public function signup(Request $request)
     {
 
+       
         $user = User::create([
             'name' => $request['nombre'],
             'email' => $request['email'],
@@ -51,7 +52,8 @@ class UsuarioController extends Controller
                 'id'=>$id_p->id,
                 'nombre'=>$personal->nombre,
                 'email'=>$user->email,
-                'cedula'=>$personal->huella,
+                'cedula'=>$personal->cedula,
+                'huella'=>$personal->huella,
                 'message' => 'El Usuario es valido',
                 'status_code' => 200
             ]);
@@ -77,14 +79,26 @@ class UsuarioController extends Controller
         //return $hashpassword->toJson();
        /* Hash::check('plain-text', $hashedPassword*/
        //if ( Hash::check($password,$hashpassword)) { 
-        if ( Hash::check($password,$hashpassword->password)) {
+        if ( $hashpassword != null && Hash::check($password,$hashpassword->password)) {
+            $datos= DB::table('users as u')
+            ->join('personal as p','p.id_user','=','u.id')
+        ->select('p.id as id','p.nombre as nombre','p.cedula as cedula','p.huella as huella')             
+        ->where('u.email','=',$email)    
+        ->first();
+
+
             return response()->json([
-                'message' => 'la contrseña es valida',
+                'id'=>$datos->id,
+                'nombre'=>$datos->nombre,
+                'email'=>$email,
+                'cedula'=>$datos->cedula,
+                'huella'=>$datos->huella,
+                'message' => 'los campos son valida',
                 'status_code' => 200
             ]);
         } else {
             return response()->json([
-                'message' => 'la contrseña no es valida',
+                'message' => 'los campos no son valida',
                 'status_code' => 400
             ]);
         }

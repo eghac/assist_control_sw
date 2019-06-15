@@ -50,7 +50,7 @@
                         @if($p->estado==0)
                         <td>pendiente</td>
                         @elseif($p->estado==1)
-                        <td>En Proceso</td>
+                        <td>Completada</td>
                         @elseif($p->estado==2)
                         <td>finalizado</td>
                         @elseif($p->estado==3)

@@ -45,7 +45,7 @@ class ServicioController extends Controller
     public function create()
     {
         //
-        $personal=DB::table('personal')->where('estado','=','1')->get();
+        $personal=DB::table('personal')->get();
         $cliente=DB::table('cliente')->get();
         $ubicacion=DB::table('ubicacion')->get();
         return view('crud.servicio.create',['personal'=>$personal,'cliente'=>$cliente,'ubicacion'=>$ubicacion]);
@@ -66,7 +66,7 @@ class ServicioController extends Controller
         
         $servicio->fecha_hora=$request->get('fecha_hora');
         $servicio->id_personal=$request->get('id_personal');
-        $servicio->estado='1';
+        $servicio->estado='0';
         $servicio->save();
         //dd($personal);
         return redirect('servicio');
@@ -87,11 +87,26 @@ class ServicioController extends Controller
     public function show($id)
     {
         //
-        $servicio=DB::table('nota_servicio as n')
+        $servicio=DB::table('cliente as c')
+
+
+        ->join('nota_servicio as n','n.id_cliente','=','c.id')
+        ->join('personal as p','p.id','=','n.id_personal')
+        ->join('ubicacion as u','c.id_ubicacion','=','u.id')
+        
+        ->select('n.id as id','n.descripcion as description','c.nombre as customer_name','n.estado as state','c.telefono','u.x as lng','u.y as lat')
+
+        ->where('p.id','=',$id)
+        ->get();
+
+        $datos= file_get_contents("archivo (1).json");
+       
+
+      
      
-        ->select('n.id','n.id_cliente','n.descripcion','n.fecha_hora','n.id_personal','n.estado')               
-        ->where('n.id_personal','=',$id)->get();
-        return $servicio->toJson();
+        return ($servicio);
+        
+        /*return response()->json($datos);*/
     }
 
    /* public function person(){

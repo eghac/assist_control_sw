@@ -15,5 +15,6 @@ class Marcado extends Model
         'fecha_hora',
         'tipo', 
         'id_ubicacion',
+        'id_nota',
     ]; 
 }

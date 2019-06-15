@@ -1,0 +1,35 @@
+	[
+		{
+			"id": "1",
+			"description": "Nota de servicio 1",
+			"customer_name": "Luis Vélez",
+			"state": 1,
+			"lat":-17.780349,
+			"lng":-63.181690
+		},
+		{
+			"id": "2",
+			"description": "Nota de servicio 2",
+			"customer_name": "Rocío",
+			"state": 1,
+			"lat":-17.764968,
+			"lng":-63.184164
+		},
+		{
+			"id": "3",
+			"description": "Nota de servicio 3",
+			"customer_name": "Wilar Arancibia",
+			"state": 1,
+			"lat":-17.776285,
+			"lng":-63.195081
+		},
+		{
+			"id": "4",
+			"description": "Nota de servicio 4",
+			"customer_name": "German Aguirre",
+			"state": 1,
+			"lat":-17.735185,
+			"lng":-63.181023
+		}
+	]
+	

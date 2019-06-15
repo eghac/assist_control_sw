@@ -27,3 +27,7 @@ Route::get('/login/{email}/{password}', 'UsuarioController@show');
 
 Route::post('/marcado', 'MarcadoController@store');
 //Route::get('/marcados', 'MarcadoController@show');
+Route::get('/servicio/{id}', 'ServicioController@show');
+
+
+
