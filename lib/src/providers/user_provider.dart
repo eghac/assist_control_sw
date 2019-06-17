@@ -83,7 +83,7 @@ class UserProvider {
       _prefs.employeeId = decodedRespose['id'].toString();
       _prefs.fullName = decodedRespose['nombre'];
       _prefs.email = decodedRespose['email'];
-      _prefs.ci = decodedRespose['cedula'];
+      _prefs.ci = decodedRespose['cedula'].toString();
       _prefs.fingerPrint = decodedRespose['huella'];
       return {'status_code': 200, 'message': decodedRespose['message']};
     } else

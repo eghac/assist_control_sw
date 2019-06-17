@@ -148,13 +148,18 @@ class _MapsPageState extends State<MapsPage> {
     return currentLocation;
   }
 
+  StreamSubscription<geo.Position> positionStream3;
+
   _tracking(bool markedGlobal) {
     var locationOptions = geo.LocationOptions(
         accuracy: geo.LocationAccuracy.high, distanceFilter: 50);
 
-    StreamSubscription<geo.Position> positionStream = geolocator
-        .getPositionStream(locationOptions)
-        .listen((geo.Position position) async {
+
+    // Aquí revisar la cola de permisos para ubicación
+    var positionStream2 = geolocator.getPositionStream(locationOptions);
+
+    // StreamSubscription<geo.Position> positionStream3 =
+    positionStream3 = positionStream2.listen((geo.Position position) async {
       print(position == null
           ? 'Unknown tracking: '
           : 'tracking: ' +
@@ -178,7 +183,7 @@ class _MapsPageState extends State<MapsPage> {
             print('HAbilitar huella');
           } else {
             print('DESHABILITAR huella');
-            if(!mounted) return;
+            if (!mounted) return;
             setState(() {
               markedGlobal ?? true;
             });
@@ -189,6 +194,12 @@ class _MapsPageState extends State<MapsPage> {
         print('User location is null');
       }
     });
+//    .cancel() as StreamSubscription<geo.Position>;
+  }
+
+  disposed() {
+    positionStream3.cancel();
+    super.dispose();
   }
 
   Future<double> _distanceBetween(LatLng start, LatLng end) async {

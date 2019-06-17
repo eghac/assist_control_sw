@@ -156,7 +156,7 @@ class _ServiceDetailPageState extends State<ServiceDetailPage> {
                     child: Text('Iniciar servicio'),
                     onPressed: () {
                       if (!_inicioServicio && !_servicioTerminado) {
-                        return fingerPrint(context, 2);
+                        return fingerPrint(context, 2, service);
                       } else if (_servicioTerminado) return null;
                     }),
                 SizedBox(
@@ -169,7 +169,7 @@ class _ServiceDetailPageState extends State<ServiceDetailPage> {
                       : Colors.transparent,
                   child: Text('Terminar servicio'),
                   onPressed: () =>
-                      _inicioServicio ? fingerPrint(context, 3) : null,
+                      _inicioServicio ? fingerPrint(context, 3, service) : null,
                 ),
               ],
             ),
@@ -179,7 +179,8 @@ class _ServiceDetailPageState extends State<ServiceDetailPage> {
     );
   }
 
-  Future<void> fingerPrint(BuildContext context, markedType) async {
+  Future<void> fingerPrint(
+      BuildContext context, markedType, Service service) async {
     bool canCheckBiometric = false;
 
     bool isAuthorized = false;
@@ -205,9 +206,11 @@ class _ServiceDetailPageState extends State<ServiceDetailPage> {
       final time = d[1];
       final date = d[0];
 
+      print(userLocation);
+
       await markedProvider
           .createMarked(MarkedModel(fecha: date, hora: time, tipo: markedType),
-              _position?.latitude, _position?.longitude)
+              userLocation.latitude, userLocation?.longitude, service.id)
           .then((b) {
         if (b) {
           setState(() {

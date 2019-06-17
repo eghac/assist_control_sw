@@ -15,6 +15,7 @@ import 'package:local_auth/local_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' as gm;
 import 'package:geolocator/geolocator.dart' as geo;
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class HomePage extends StatefulWidget {
   static final String routeName = 'home';
@@ -24,6 +25,8 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+
   int _currentPage = 0;
 
   final LocalAuthentication _localAuthentication = LocalAuthentication();
@@ -37,6 +40,26 @@ class HomePageState extends State<HomePage> {
   final userProvider = new UserProvider();
 
   final profileProvider = new ProfileProvider();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    // _firebaseMessaging.requestNotificationPermissions();
+
+    // _firebaseMessaging.configure(onMessage: (Map<String, dynamic> message) {
+    //   print('onMessage: $message');
+    // }, onLaunch: (Map<String, dynamic> message) {
+    //   print('onLaunch: $message');
+    // }, onResume: (Map<String, dynamic> message) {
+    //   print('onResume: $message');
+    // });
+
+    // _firebaseMessaging.getToken().then((token) {
+    //   print(token);
+    // });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -133,7 +156,7 @@ class HomePageState extends State<HomePage> {
 
       await markedProvider
           .createMarked(MarkedModel(fecha: date, hora: time, tipo: markedType),
-              _position?.latitude, _position?.longitude)
+              _position?.latitude, _position?.longitude, 1000)
           .then((b) {
         if (b) {
           _showDialog(context);
