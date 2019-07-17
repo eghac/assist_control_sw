@@ -29,5 +29,7 @@ Route::post('/marcado', 'MarcadoController@store');
 //Route::get('/marcados', 'MarcadoController@show');
 Route::get('/servicio/{id}', 'ServicioController@show');
 
+Route::get('/ruta/{id}', 'MapaController@ruta');
+
 
 

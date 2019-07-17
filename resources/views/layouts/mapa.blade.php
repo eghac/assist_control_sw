@@ -1,464 +1,631 @@
+
 <!DOCTYPE html>
-<html lang="en">
-<!--metadatos-->
+<html>
 <head>
-    <meta charset="UTF-8">
-    <TItle>documento</TItle>
-    <meta name="description" content="es una pagina de software" />
-    <!--Para llamar mis arhivos css-->
-   
-    <script src='https://api.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.js'></script>
-    <link href='https://api.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.css' rel='stylesheet' />
+    <meta charset='utf-8' />
+    <title></title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.css' rel='stylesheet' />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
 
-<style>
-#map{
-    height: 500px;
-    width: 500px;
-    }
-
-
-</style>
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+      }
+    </style>
 </head>
-
-
 <body>
 
-        <style>
-                .coordinates {
-                background: rgba(0,0,0,0.5);
-                color: #fff;
-                position: absolute;
-                bottom: 40px;
-                left: 10px;
-                padding:5px 10px;
-                margin: 0;
-                font-size: 11px;
-                line-height: 18px;
-                border-radius: 3px;
-                display: none;
-                }
+<div id='map'></div>
 
-                body {
-  background: #404040;
-  color: #f8f8f8;
-  font: 500 20px/26px 'Helvetica Neue', Helvetica, Arial, Sans-serif;
-  margin: 0;
-  padding: 0;
-  -webkit-font-smoothing: antialiased;
-}
-.sidebar {
-  width: 33.3333%;
-}
-
-.pad2 {
-  padding: 20px;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-}
-                </style>
-        
-        
-        <div class='sidebar pad2'>Listing</div>
-        <div id='map' class='map pad2' style='width: 400px; height: 300px;'>map</div>
-        <pre id='coordinates' class='coordinates'></pre>
-
-        <form id="demo-form2"  action="{{route('personal.store')}}" method="POST" enctype="multipart/form-data"  data-parsley-validate class="form-horizontal form-label-left">
-            <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
-          <div class="form-group">
-            <label id="" class="control-label col-md-3 col-sm-3 col-xs-12" for="nombre">x1 <span class="required">*</span>
-            </label>
-            <div class="col-md-6 col-sm-6 col-xs-12">
-              <input type="text" id="x1" name="nombre" required="required" value="-63.188496" class="form-control col-md-7 col-xs-12">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label id="" class="control-label col-md-3 col-sm-3 col-xs-12" for="nombre">x2 <span class="required">*</span>
-            </label>
-            <div class="col-md-6 col-sm-6 col-xs-12">
-              <input type="text" id="x2" name="nombre" required="required" value="-17.790127" class="form-control col-md-7 col-xs-12">
-            </div>
-          </div>
-
-
-          <div class="form-group">
-            <label  class="control-label col-md-3 col-sm-3 col-xs-12" for="cedula">Latitud <span class="required">*</span>
-            </label>
-            <div class="col-md-6 col-sm-6 col-xs-12">
-              <input type="text" id="y" name="y" required="required" class="form-control col-md-7 col-xs-12">
-            </div>
-          </div>
-          <div class="form-group">
-            <label  class="control-label col-md-3 col-sm-3 col-xs-12" for="huella">Longitud <span class="required">*</span>
-            </label>
-            <div class="col-md-6 col-sm-6 col-xs-12">
-              <input type="text" id="x" name="x" required="required" class="form-control col-md-7 col-xs-12">
-            </div>
-          </div>
-
-          <div class="ln_solid"></div>
-          <div class="form-group">
-            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-             
-              
-              <button class="btn btn-primary" type="reset">Reset</button>
-              <button type="submit" class="btn btn-success">Registrar</button>
-            </div>
-          </div>
-
-        </form>
-
-
-    </section>
-    <!--PIE DE PAGINA -->
-    <footer>
-        <p>Luis Velez - 72121241</p>
-
-    </footer>
-
-</body>
-
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
 <script>
- 
 
 
-  var x1=document.getElementById('x1').value;
-     var x2=document.getElementById('x2').value;
-    mapboxgl.accessToken = 'pk.eyJ1IjoibHVpczM0NjE1ODAiLCJhIjoiY2p2czNmOGhxMDQwdzQ5bWl6OGw4bDFzaiJ9.a59-BpifTcoNeLOVSTl53Q';
-    var map = new mapboxgl.Map({
-    container: 'map',
-     style: 'mapbox://styles/mapbox/streets-v10',
+var puntos = {
+  type: 'FeatureCollection',
+  features: [
+    {
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: [-63.1375,-17.782]
+      },
+      properties: {
+      }
+    },
+       {
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: [-63.2182,-17.8688]
+      },
+      properties: {
+      }
+    },
+  ]
+};  
 
-     //center: [-63.188496,-17.790127],
-     center: [x1,x2],
-     zoom:13
-     });
+var stores = {
+  type: 'FeatureCollection',
+  features: [
+    {
+      type: 'Feature',
+      geometry: {
+        type: 'LineString',
+        coordinates: [
+          [-63.1375,-17.782
+],[-63.1366,-17.7817
+],[-63.1357,-17.7814
+],[-63.1345,-17.7809
+],[-63.1331,-17.7804
+],[-63.1333,-17.7798
+],[-63.1336,-17.7792
+],[-63.1338,-17.7785
+],[-63.1341,-17.7777
+],[-63.1353,-17.7781
+],[-63.137,-17.7787
+],[-63.1387,-17.7793
+],[-63.1402,-17.7799
+],[-63.141,-17.7802
+],[-63.1418,-17.7806
+],[-63.1429,-17.781
+],[-63.1447,-17.7816
+],[-63.1452,-17.7821
+],[-63.1455,-17.7828
+],[-63.146,-17.7838
+],[-63.1464,-17.785
+],[-63.1461,-17.7858
+],[-63.1458,-17.7864
+],[-63.1471,-17.7869
+],[-63.1479,-17.7872
+],[-63.1479,-17.7863
+],[-63.1478,-17.7857
+],[-63.1478,-17.7853
+],[-63.1478,-17.785
+],[-63.1481,-17.7848
+],[-63.1481,-17.7857
+],[-63.1482,-17.7865
+],[-63.1483,-17.7876
+],[-63.1484,-17.7885
+],[-63.1484,-17.7891
+],[-63.1484,-17.7894
+],[-63.1485,-17.7901
+],[-63.1485,-17.791
+],[-63.1486,-17.7918
+],[-63.1486,-17.7925
+],[-63.1496,-17.7925
+],[-63.1504,-17.7924
+],[-63.1513,-17.7925
+],[-63.1521,-17.7925
+],[-63.1529,-17.7926
+],[-63.1529,-17.7929
+],[-63.153,-17.7938
+],[-63.1531,-17.7941
+],[-63.1532,-17.7944
+],[-63.1539,-17.7943
+],[-63.1546,-17.7941
+],[-63.1554,-17.7939
+],[-63.1562,-17.7936
+],[-63.1565,-17.7942
+],[-63.1567,-17.7947
+],[-63.1571,-17.7954
+],[-63.1573,-17.7954
+],[-63.1582,-17.795
+],[-63.1591,-17.7948
+],[-63.1604,-17.7946
+],[-63.1609,-17.7946
+],[-63.162,-17.7944
+],[-63.1623,-17.7941
+],[-63.1627,-17.7928
+],[-63.1628,-17.7921
+],[-63.1628,-17.7917
+],[-63.1627,-17.7911
+],[-63.1625,-17.7904
+],[-63.1623,-17.7895
+],[-63.162,-17.7885
+],[-63.162,-17.788
+],[-63.1624,-17.7877
+],[-63.1628,-17.7876
+],[-63.1631,-17.7876
+],[-63.1637,-17.7876
+],[-63.1642,-17.7873
+],[-63.1645,-17.7872
+],[-63.165,-17.787
+],[-63.1657,-17.7868
+],[-63.1665,-17.7866
+],[-63.1676,-17.7862
+],[-63.1682,-17.7859
+],[-63.1693,-17.7854
+],[-63.1702,-17.7849
+],[-63.1702,-17.7839
+],[-63.171,-17.784
+],[-63.1719,-17.784
+],[-63.172,-17.7834
+],[-63.1721,-17.7829
+],[-63.1722,-17.7825
+],[-63.1723,-17.782
+],[-63.1724,-17.7809
+],[-63.1725,-17.7802
+],[-63.1726,-17.7796
+],[-63.1726,-17.7794
+],[-63.1728,-17.7795
+],[-63.174,-17.7797
+],[-63.175,-17.7799
+],[-63.1767,-17.7801
+],[-63.1777,-17.7803
+],[-63.1788,-17.7805
+],[-63.1785,-17.7815
+],[-63.1783,-17.7825
+],[-63.1783,-17.7835
+],[-63.1782,-17.7845
+],[-63.178,-17.7854
+],[-63.1778,-17.7863
+],[-63.1788,-17.7865
+],[-63.1801,-17.7867
+],[-63.1812,-17.7869
+],[-63.1823,-17.7871
+],[-63.1833,-17.7872
+],[-63.1844,-17.7874
+],[-63.1853,-17.7876
+],[-63.1862,-17.7877
+],[-63.1867,-17.7879
+],[-63.1873,-17.7881
+],[-63.1877,-17.7886
+],[-63.1879,-17.7888
+],[-63.1878,-17.7891
+],[-63.1877,-17.7894
+],[-63.1876,-17.7898
+],[-63.1874,-17.7906
+],[-63.1873,-17.7917
+],[-63.1872,-17.7923
+],[-63.1871,-17.7927
+],[-63.1872,-17.7932
+],[-63.188,-17.7939
+],[-63.1889,-17.7946
+],[-63.1898,-17.7954
+],[-63.19,-17.7956
+],[-63.1904,-17.796
+],[-63.1911,-17.7966
+],[-63.1917,-17.7971
+],[-63.1926,-17.7979
+],[-63.1929,-17.7981
+],[-63.1937,-17.7988
+],[-63.1945,-17.7995
+],[-63.1951,-17.8001
+],[-63.196,-17.8009
+],[-63.1965,-17.8013
+],[-63.1968,-17.8015
+],[-63.1974,-17.8021
+],[-63.198,-17.8027
+],[-63.1986,-17.8032
+],[-63.199,-17.8036
+],[-63.1993,-17.8038
+],[-63.1992,-17.804
+],[-63.1985,-17.8049
+],[-63.1978,-17.8057
+],[-63.1973,-17.8064
+],[-63.1977,-17.8067
+],[-63.1985,-17.8073
+],[-63.1992,-17.8078
+],[-63.1998,-17.8082
+],[-63.2005,-17.8087
+],[-63.2003,-17.8095
+],[-63.2002,-17.8101
+],[-63.2,-17.8117
+],[-63.1998,-17.8129
+],[-63.1996,-17.8139
+],[-63.1993,-17.816
+],[-63.1992,-17.8165
+],[-63.199,-17.8176
+],[-63.1987,-17.8188
+],[-63.1996,-17.8183
+],[-63.1998,-17.8185
+],[-63.1991,-17.819
+],[-63.1988,-17.8192
+],[-63.1987,-17.8199
+],[-63.1991,-17.8207
+],[-63.1995,-17.8213
+],[-63.1999,-17.8222
+],[-63.2001,-17.8226
+],[-63.2008,-17.824
+],[-63.2013,-17.825
+],[-63.202,-17.8263
+],[-63.2024,-17.8272
+],[-63.2029,-17.8281
+],[-63.203,-17.8288
+],[-63.2033,-17.8295
+],[-63.2036,-17.8302
+],[-63.2039,-17.8309
+],[-63.2043,-17.8315
+],[-63.2049,-17.8321
+],[-63.2058,-17.8329
+],[-63.2066,-17.8337
+],[-63.2073,-17.8345
+],[-63.2077,-17.835
+],[-63.2082,-17.8357
+],[-63.2089,-17.8366
+],[-63.2094,-17.8373
+],[-63.2099,-17.838
+],[-63.2102,-17.8385
+],[-63.2109,-17.8395
+],[-63.2111,-17.8399
+],[-63.2119,-17.8409
+],[-63.2122,-17.8413
+],[-63.2125,-17.8418
+],[-63.213,-17.8424
+],[-63.2136,-17.8433
+],[-63.214,-17.844
+],[-63.2144,-17.8445
+],[-63.2135,-17.8452
+],[-63.2129,-17.8457
+],[-63.2123,-17.8462
+],[-63.2118,-17.8467
+],[-63.2113,-17.8473
+],[-63.2108,-17.8478
+],[-63.2103,-17.8484
+],[-63.2107,-17.8492
+],[-63.211,-17.8497
+],[-63.2113,-17.8504
+],[-63.2119,-17.8517
+],[-63.2125,-17.853
+],[-63.2128,-17.8537
+],[-63.2136,-17.8553
+],[-63.2139,-17.856
+],[-63.2144,-17.8569
+],[-63.2146,-17.8574
+],[-63.2149,-17.858
+],[-63.2151,-17.8586
+],[-63.2145,-17.8591
+],[-63.2137,-17.8596
+],[-63.214,-17.8601
+],[-63.2144,-17.8606
+],[-63.2148,-17.8612
+],[-63.2152,-17.8617
+],[-63.2155,-17.8623
+],[-63.2159,-17.8628
+],[-63.2163,-17.8634
+],[-63.2173,-17.8627
+],[-63.2186,-17.8619
+],[-63.2188,-17.8623
+],[-63.2192,-17.8626
+],[-63.2196,-17.8624
+],[-63.22,-17.862
+],[-63.2204,-17.8611
+],[-63.2207,-17.8605
+],[-63.2217,-17.8605
+],[-63.2226,-17.8606
+],[-63.2225,-17.8614
+],[-63.2224,-17.8622
+],[-63.2223,-17.8627
+],[-63.222,-17.8645
+],[-63.2219,-17.866
+],[-63.2218,-17.8672
+],[-63.2217,-17.8683
+],[-63.221,-17.8682
+],[-63.2203,-17.8682
+],[-63.2197,-17.8681
+],[-63.219,-17.8681
+],[-63.2183,-17.868
+],[-63.2177,-17.868
+],[-63.2176,-17.8683
+],[-63.2175,-17.8688
+],[-63.2182,-17.8688]
 
 
-//https://docs.mapbox.com/help/tutorials/building-a-store-locator/
-
-     var marker=new mapboxgl.Marker({
-    draggable: true
-    }).setLngLat({
-         lng:-63.188496,
-         lat:-17.790127
-     }).addTo(map)
-
-     function onDragEnd() {
-            var lngLat = marker.getLngLat();
-            
-            document.getElementById('x').value =lngLat.lng;;
-            document.getElementById('y').value =lngLat.lat;
-            }
-            
-            marker.on('dragend', onDragEnd);
 
 
+        ]
+      },
+      properties: {
+        color: '#F7455D', // red,
+        title: 'The White House'
+      
+      }
+    },
+    {
+      type: 'Feature',
+      geometry: {
+        type: 'LineString',
+        coordinates: [
+          [-63.2182,-17.8688
+],[-63.2175,-17.8688
+],[-63.2176,-17.8683
+],[-63.2177,-17.868
+],[-63.2183,-17.868
+],[-63.2183,-17.868
+],[-63.219,-17.8681
+],[-63.2197,-17.8681
+],[-63.2203,-17.8682
+],[-63.221,-17.8682
+],[-63.2217,-17.8683
+],[-63.2218,-17.8672
+],[-63.2219,-17.866
+],[-63.222,-17.8645
+],[-63.2223,-17.8627
+],[-63.2224,-17.8622
+],[-63.2225,-17.8614
+],[-63.2226,-17.8606
+],[-63.2217,-17.8605
+],[-63.2207,-17.8605
+],[-63.2204,-17.8611
+],[-63.22,-17.862
+],[-63.2196,-17.8624
+],[-63.2192,-17.8626
+],[-63.2188,-17.8623
+],[-63.2186,-17.8619
+],[-63.2173,-17.8627
+],[-63.2163,-17.8634
+],[-63.2159,-17.8628
+],[-63.2155,-17.8623
+],[-63.2152,-17.8617
+],[-63.2148,-17.8612
+],[-63.2144,-17.8606
+],[-63.214,-17.8601
+],[-63.2137,-17.8596
+],[-63.2145,-17.8591
+],[-63.2151,-17.8586
+],[-63.2149,-17.858
+],[-63.2146,-17.8574
+],[-63.2144,-17.8569
+],[-63.2139,-17.856
+],[-63.2136,-17.8553
+],[-63.2128,-17.8537
+],[-63.2125,-17.853
+],[-63.2119,-17.8517
+],[-63.2113,-17.8504
+],[-63.211,-17.8497
+],[-63.2107,-17.8492
+],[-63.2113,-17.8486
+],[-63.212,-17.8479
+],[-63.2125,-17.8474
+],[-63.213,-17.8469
+],[-63.2135,-17.8464
+],[-63.2141,-17.8458
+],[-63.2148,-17.8451
+],[-63.2144,-17.8445
+],[-63.214,-17.844
+],[-63.2136,-17.8433
+],[-63.213,-17.8424
+],[-63.2125,-17.8418
+],[-63.2122,-17.8413
+],[-63.2111,-17.8399
+],[-63.2102,-17.8385
+],[-63.2099,-17.838
+],[-63.2094,-17.8373
+],[-63.2089,-17.8366
+],[-63.2082,-17.8357
+],[-63.2077,-17.835
+],[-63.2073,-17.8345
+],[-63.2066,-17.8337
+],[-63.2058,-17.8329
+],[-63.205,-17.8322
+],[-63.2043,-17.8315
+],[-63.2039,-17.8309
+],[-63.2036,-17.8302
+],[-63.2033,-17.8295
+],[-63.203,-17.8288
+],[-63.2029,-17.8281
+],[-63.2023,-17.8272
+],[-63.202,-17.8263
+],[-63.2012,-17.8251
+],[-63.2008,-17.8242
+],[-63.2003,-17.8233
+],[-63.1998,-17.8224
+],[-63.1995,-17.8213
+],[-63.1989,-17.8205
+],[-63.1985,-17.8198
+],[-63.198,-17.8195
+],[-63.1979,-17.8192
+],[-63.1986,-17.8188
+],[-63.199,-17.8176
+],[-63.1992,-17.8166
+],[-63.1993,-17.816
+],[-63.1996,-17.8139
+],[-63.1998,-17.8129
+],[-63.2,-17.8117
+],[-63.2002,-17.8101
+],[-63.2003,-17.8095
+],[-63.2005,-17.8087
+],[-63.1998,-17.8082
+],[-63.1992,-17.8078
+],[-63.1985,-17.8073
+],[-63.1977,-17.8067
+],[-63.1983,-17.8061
+],[-63.199,-17.8053
+],[-63.1984,-17.8048
+],[-63.1989,-17.8043
+],[-63.1989,-17.8039
+],[-63.1982,-17.8031
+],[-63.1974,-17.8025
+],[-63.1966,-17.8017
+],[-63.1959,-17.801
+],[-63.1951,-17.8004
+],[-63.1943,-17.7997
+],[-63.1935,-17.799
+],[-63.1927,-17.7983
+],[-63.1919,-17.7977
+],[-63.1907,-17.7964
+],[-63.19,-17.7959
+],[-63.1896,-17.7955
+],[-63.1887,-17.7947
+],[-63.1876,-17.7937
+],[-63.187,-17.7935
+],[-63.1869,-17.7931
+],[-63.187,-17.7922
+],[-63.187,-17.7917
+],[-63.1872,-17.7905
+],[-63.1874,-17.7894
+],[-63.1864,-17.7891
+],[-63.1851,-17.7888
+],[-63.1842,-17.7886
+],[-63.1832,-17.7883
+],[-63.1822,-17.7881
+],[-63.1811,-17.7879
+],[-63.18,-17.7876
+],[-63.1787,-17.7872
+],[-63.1776,-17.787
+],[-63.1767,-17.7868
+],[-63.1769,-17.786
+],[-63.177,-17.7852
+],[-63.1771,-17.7845
+],[-63.1772,-17.7834
+],[-63.1773,-17.7824
+],[-63.1775,-17.7814
+],[-63.1765,-17.7813
+],[-63.1749,-17.7811
+],[-63.1738,-17.781
+],[-63.1724,-17.7809
+],[-63.1723,-17.782
+],[-63.1721,-17.7831
+],[-63.1721,-17.7841
+],[-63.172,-17.7848
+],[-63.172,-17.7856
+],[-63.1714,-17.7854
+],[-63.1708,-17.7852
+],[-63.1696,-17.7854
+],[-63.1684,-17.7861
+],[-63.1676,-17.7862
+],[-63.1669,-17.7867
+],[-63.1654,-17.787
+],[-63.1644,-17.7874
+],[-63.1639,-17.7877
+],[-63.1632,-17.7879
+],[-63.1628,-17.7882
+],[-63.1623,-17.7887
+],[-63.1623,-17.7892
+],[-63.1625,-17.7898
+],[-63.1628,-17.791
+],[-63.1629,-17.7921
+],[-63.1627,-17.7933
+],[-63.1624,-17.7941
+],[-63.1624,-17.7946
+],[-63.1616,-17.7948
+],[-63.1607,-17.7949
+],[-63.16,-17.7949
+],[-63.1586,-17.7952
+],[-63.1575,-17.7956
+],[-63.1569,-17.7956
+],[-63.1568,-17.7948
+],[-63.1565,-17.7942
+],[-63.1562,-17.7936
+],[-63.1558,-17.7929
+],[-63.1551,-17.7927
+],[-63.1544,-17.7923
+],[-63.1536,-17.7921
+],[-63.153,-17.7918
+],[-63.1522,-17.7915
+],[-63.1515,-17.7912
+],[-63.1506,-17.7909
+],[-63.1495,-17.7904
+],[-63.1485,-17.7901
+],[-63.1485,-17.791
+],[-63.1486,-17.7918
+],[-63.1486,-17.7925
+],[-63.1488,-17.7933
+],[-63.1485,-17.7934
+],[-63.1483,-17.7923
+],[-63.1482,-17.7916
+],[-63.1482,-17.791
+],[-63.1481,-17.7903
+],[-63.1481,-17.7898
+],[-63.1481,-17.789
+],[-63.148,-17.788
+],[-63.1479,-17.7872
+],[-63.1471,-17.7869
+],[-63.1458,-17.7864
+],[-63.1435,-17.7856
+],[-63.1438,-17.7849
+],[-63.144,-17.7843
+],[-63.1453,-17.7846
+],[-63.1464,-17.785
+],[-63.146,-17.7838
+],[-63.1455,-17.7828
+],[-63.1452,-17.7821
+],[-63.1447,-17.7816
+],[-63.1429,-17.781
+],[-63.1418,-17.7806
+],[-63.141,-17.7802
+],[-63.1402,-17.7799
+],[-63.1387,-17.7793
+],[-63.137,-17.7787
+],[-63.1353,-17.7781
+],[-63.1341,-17.7777
+],[-63.1338,-17.7785
+],[-63.1336,-17.7792
+],[-63.1333,-17.7798
+],[-63.1331,-17.7804
+],[-63.1345,-17.7809
+],[-63.1357,-17.7814
+],[-63.1366,-17.7817
+],[-63.1375,-17.782]
 
 
-            var pack = {
-                "type": "FeatureCollection",
-                "features": [
-                  {
-                    "type": "Feature",
-                    "geometry": {
-                      "type": "Point",
-                      "coordinates": [
-                        -77.034084142948,
-                        38.909671288923
-                      ]
-                    },
-                    "properties": {
-                      "phoneFormatted": "(202) 234-7336",
-                      "phone": "2022347336",
-                      "address": "1471 P St NW",
-                      "city": "Washington DC",
-                      "country": "United States",
-                      "crossStreet": "at 15th St NW",
-                      "postalCode": "20005",
-                      "state": "D.C."
-                    }
-                  },
-                  {
-                    "type": "Feature",
-                    "geometry": {
-                      "type": "Point",
-                      "coordinates": [
-                        -77.049766,
-                        38.900772
-                      ]
-                    },
-                    "properties": {
-                      "phoneFormatted": "(202) 507-8357",
-                      "phone": "2025078357",
-                      "address": "2221 I St NW",
-                      "city": "Washington DC",
-                      "country": "United States",
-                      "crossStreet": "at 22nd St NW",
-                      "postalCode": "20037",
-                      "state": "D.C."
-                    }
-                  },
-                  {
-                    "type": "Feature",
-                    "geometry": {
-                      "type": "Point",
-                      "coordinates": [
-                        -63.19047010582818,
-                        -17.79053563173207
-                      ]
-                    },
-                    "properties": {
-                      "phoneFormatted": "(202) 387-9338",
-                      "phone": "2023879338",
-                      "address": "1512 Connecticut Ave NW",
-                      "city": "Washington DC",
-                      "country": "United States",
-                      "crossStreet": "at Dupont Circle",
-                      "postalCode": "20036",
-                      "state": "D.C."
-                    }
-                  },
-                  {
-                    "type": "Feature",
-                    "geometry": {
-                      "type": "Point",
-                      "coordinates": [
-                        -77.0672,
-                        38.90516896
-                      ]
-                    },
-                    "properties": {
-                      "phoneFormatted": "(202) 337-9338",
-                      "phone": "2023379338",
-                      "address": "3333 M St NW",
-                      "city": "Washington DC",
-                      "country": "United States",
-                      "crossStreet": "at 34th St NW",
-                      "postalCode": "20007",
-                      "state": "D.C."
-                    }
-                  },
-                  {
-                    "type": "Feature",
-                    "geometry": {
-                      "type": "Point",
-                      "coordinates": [
-                        -77.002583742142,
-                        38.887041080933
-                      ]
-                    },
-                    "properties": {
-                      "phoneFormatted": "(202) 547-9338",
-                      "phone": "2025479338",
-                      "address": "221 Pennsylvania Ave SE",
-                      "city": "Washington DC",
-                      "country": "United States",
-                      "crossStreet": "btwn 2nd & 3rd Sts. SE",
-                      "postalCode": "20003",
-                      "state": "D.C."
-                    }
-                  },
-                  {
-                    "type": "Feature",
-                    "geometry": {
-                      "type": "Point",
-                      "coordinates": [
-                        -76.933492720127,
-                        38.99225245786
-                      ]
-                    },
-                    "properties": {
-                      "address": "8204 Baltimore Ave",
-                      "city": "College Park",
-                      "country": "United States",
-                      "postalCode": "20740",
-                      "state": "MD"
-                    }
-                  },
-                  {
-                    "type": "Feature",
-                    "geometry": {
-                      "type": "Point",
-                      "coordinates": [
-                        -77.097083330154,
-                        38.980979
-                      ]
-                    },
-                    "properties": {
-                      "phoneFormatted": "(301) 654-7336",
-                      "phone": "3016547336",
-                      "address": "4831 Bethesda Ave",
-                      "cc": "US",
-                      "city": "Bethesda",
-                      "country": "United States",
-                      "postalCode": "20814",
-                      "state": "MD"
-                    }
-                  },
-                  {
-                    "type": "Feature",
-                    "geometry": {
-                      "type": "Point",
-                      "coordinates": [
-                        -77.359425054188,
-                        38.958058116661
-                      ]
-                    },
-                    "properties": {
-                      "phoneFormatted": "(571) 203-0082",
-                      "phone": "5712030082",
-                      "address": "11935 Democracy Dr",
-                      "city": "Reston",
-                      "country": "United States",
-                      "crossStreet": "btw Explorer & Library",
-                      "postalCode": "20190",
-                      "state": "VA"
-                    }
-                  },
-                  {
-                    "type": "Feature",
-                    "geometry": {
-                      "type": "Point",
-                      "coordinates": [
-                        -77.10853099823,
-                        38.880100922392
-                      ]
-                    },
-                    "properties": {
-                      "phoneFormatted": "(703) 522-2016",
-                      "phone": "7035222016",
-                      "address": "4075 Wilson Blvd",
-                      "city": "Arlington",
-                      "country": "United States",
-                      "crossStreet": "at N Randolph St.",
-                      "postalCode": "22203",
-                      "state": "VA"
-                    }
-                  },
-                  {
-                    "type": "Feature",
-                    "geometry": {
-                      "type": "Point",
-                      "coordinates": [
-                        -75.28784,
-                        40.008008
-                      ]
-                    },
-                    "properties": {
-                      "phoneFormatted": "(610) 642-9400",
-                      "phone": "6106429400",
-                      "address": "68 Coulter Ave",
-                      "city": "Ardmore",
-                      "country": "United States",
-                      "postalCode": "19003",
-                      "state": "PA"
-                    }
-                  },
-                  {
-                    "type": "Feature",
-                    "geometry": {
-                      "type": "Point",
-                      "coordinates": [
-                        -75.20121216774,
-                        39.954030175164
-                      ]
-                    },
-                    "properties": {
-                      "phoneFormatted": "(215) 386-1365",
-                      "phone": "2153861365",
-                      "address": "3925 Walnut St",
-                      "city": "Philadelphia",
-                      "country": "United States",
-                      "postalCode": "19104",
-                      "state": "PA"
-                    }
-                  },
-                  {
-                    "type": "Feature",
-                    "geometry": {
-                      "type": "Point",
-                      "coordinates": [
-                        -17.79821773436113,
-                        -63.20875204248205
-                      ]
-                    },
-                    "properties": {
-                      "phoneFormatted": "(202) 331-3355",
-                      "phone": "2023313355",
-                      "address": "1901 L St. NW",
-                      "city": "Washington DC",
-                      "country": "United States",
-                      "crossStreet": "at 19th St",
-                      "postalCode": "20036",
-                      "state": "D.C."
-                    }
-                  }
-                ]
-              };
- 
-              var stores
-              document.write('hoal');
-              document.write(pack);
+        ]
+      },
+      properties: {
+        color: '#33C9EB', // azul,
+        title: 'The White House'
+      
+      }
+    }
+  ]
+};  
 
-            /*  $.ajax({
-                    url: 'person',
-                    type: 'get',
-                    data:'_token = <?php echo csrf_token() ?>',
-                    success: function (data) {
-                         stores = data;
-              }});*/
-              
+mapboxgl.accessToken = 'pk.eyJ1IjoibHVpczM0NjE1ODAiLCJhIjoiY2p2czNmOGhxMDQwdzQ5bWl6OGw4bDFzaiJ9.a59-BpifTcoNeLOVSTl53Q';
 
-                /* function getJson(url) {
-                  return JSON.parse($.ajax({
-                      type: 'GET',
-                      url: url,
-                      dataType: "json",
-                      global: false,
-                    
-                      success: function(data) {
-                          
-                        return data;
-                      }
-                  }).responseText);
-                  }
-                */  
+var map = new mapboxgl.Map({
+  container: 'map',
+  style: 'mapbox://styles/mapbox/outdoors-v10',
+  center: [-63.15788,-17.803157],
+  zoom: 13
+});
 
-                var urls=JSON.parse($.ajax({
-                      type: 'GET',
-                      url: 'person',
-                      global: false,
-                      async: true,
-  
-                  }).responseText);
-                  //document.write(url);
-                   //var x = getJson('person');
-                   //stores= geoJSON (x.responseJSON)
+//https://labs.mapbox.com/maki-icons/ lista de iconos
 
-             // document.write(stores);
-             console.log(urls);
-             console.log(pack);
-             map.on('load', function(e) {
-                // Add the data to your map as a layer
-                map.addLayer({
-                  id: 'locations',
-                  type: 'symbol',
-                  // Add a GeoJSON source containing place coordinates and information.
-                  source: {
-                    type: 'geojson',
-                    data: urls,
-                  },
-                  layout: {
-                    'icon-image': 'restaurant-15',
-                    'icon-allow-overlap': true,
-                  }
-                });
-              });
 
+map.on('load',function(){
+  map.addLayer({
+    id: 'lines',
+    type: 'line',
+    source: {
+      type: 'geojson',
+      data: stores
+    },
+    paint:{
+      'line-width': 3,
+      'line-color': ['get', 'color']
+    }
+  });
+});
+
+map.on('load', function(e) {
+  // Add the data to your map as a layer
+  map.addLayer({
+    id: 'locations',
+    type: 'symbol',
+    // Add a GeoJSON source containing place coordinates and information.
+    source: {
+      type: 'geojson',
+      data: puntos
+    },
+    layout: {
+      'icon-image': 'bus-15',
+      'icon-allow-overlap': true,
+    }
+  });
+});
+
+// code from the next step will go here!
 
 </script>
+
+</body>
 </html>

@@ -90,6 +90,20 @@ class MapaController extends Controller
         //
     }
 
+
+    public function ruta($id)
+    {
+        //
+        $ida= file_get_contents("archivo (1).json");
+        if($id=1) {
+            return response()->json($ida);
+         
+        } else {
+  
+        }
+        
+    }
+
     public function person(){
 
 

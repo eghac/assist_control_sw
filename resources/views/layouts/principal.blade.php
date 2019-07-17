@@ -89,7 +89,7 @@
                   <li><a><i class="fa fa-edit"></i> Solicitud <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                       <li><a href="{{route('servicio.index')}}">Asignacion</a></li>
-                      <li><a href="{{url('person')}}">Mapas</a></li>
+                      <li><a href="{{url('mapa')}}">Mapas</a></li>
                      
                     </ul>
                   </li>
